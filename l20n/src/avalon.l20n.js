@@ -413,11 +413,12 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/Intl", "msl20n/l20n/l20n/platform/
             if (el.$model.l20n) {
                 ctxid = String(el.$id).replace(rproxy, "$1")
                 options = el.$model.l20n
+                break
             }
             // return el.$id
         })
         if (options === undefined) { //如果都没有定义l20配置项，则使用最外层vm.$id 作为 ctxid
-            ctxid = vmodels[vmodels.length - 1].$id
+            ctxid = vmodels[0].$id
         }
 
         if (ctxid) {
