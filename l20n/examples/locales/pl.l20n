@@ -1,0 +1,21 @@
+<plural($n) {
+    $n == 0 ? 'zero' :
+    $n == 1 ? 'one' :
+    $n % 10 >= 2 && $n % 10 <= 4 && ($n % 100 < 10 || $n % 100 >= 20) ? 'few' :
+    'many'
+}>
+
+<objectsWithCount[plural($objectsNum)] {
+    zero: "brak obiektów",
+    one: "jeden obiekt",
+    few: "obiekty",
+    many: "obiektów",
+}>
+
+<setObjectsNumber "Ustaw liczbę obiektów">
+
+<overlayed "Ten akapit testuje <strong>nakładanie tłumaczenia na węzły</strong>. Liczba testowa: <input>.">
+
+<testp "ustęp">
+
+<Attribute "atrybut">
