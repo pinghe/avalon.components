@@ -48,7 +48,7 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/Intl", "msl20n/l20n/l20n/platform/
             var initLocale, manifestResource, mzl20nctx
             if (options !== undefined) {
                 initLocale = options.initLocale
-                manifestResource = optins.manifestResource
+                manifestResource = options.manifestResource
             }
             ctxArray[ctxid] = {};
             mzl20nctx = mzl20n.getContext(ctxid)
@@ -458,24 +458,24 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/Intl", "msl20n/l20n/l20n/platform/
     avalon.changeLocale = function(newLocale, ctxidparm) {
         if (avalon.type(newLocale) === 'string' && ctxidparm === undefined) {
             avalon.each(singletonCtxs.ctxArray, function(ctxid, msl20n) {
-                setLocale(msl20n, newLocale)
+                setLocale(ctxid, msl20n, newLocale)
             })
         } else if (avalon.type(newLocale) === 'string' && avalon.type(ctxidparm) === 'string') {
             var msl20n = singletonCtxs.getInstance(ctxidparm)
             if (msl20n) {
-                setLocale(msl20n, newLocale)
+                setLocale(ctxidparm, msl20n, newLocale)
             }
         }
 
-        function setLocale(msl20n, newLocale) {
+        function setLocale(ctxid, msl20n, newLocale) {
             if (newLocale !== undefined) {
                 msl20n.previousLocale = msl20n.currentLocale;
 
                 if (newLocale !== msl20n.previousLocale) {
                     msl20n.ctx.requestLocales(newLocale);
                     msl20n.currentLocale = newLocale;
-                    if (avalon.vmodels[ctxidparm].currentLocale !== undefined) {
-                        avalon.vmodels[ctxidparm].$model.currentLocale = newLocale;
+                    if (avalon.vmodels[ctxid].currentLocale !== undefined) {
+                        avalon.vmodels[ctxid].currentLocale = newLocale;
                     }
                 }
             }

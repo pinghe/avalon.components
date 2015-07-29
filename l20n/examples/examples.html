@@ -30,8 +30,19 @@
     pre {
         white-space: pre-wrap;
     }
+    /*    /* 现代排版：保证块/段落之间的空白隔行 */
     
-    i.serif {
+    .typo p,
+    .typo pre,
+    .typo ul,
+    .typo ol,
+    .typo dl,
+    .typo form,
+    .typo hr {
+        margin: 1em 0 0.6em;
+    }
+    
+    */ i.serif {
         text-transform: lowercase;
         color: #1abc9c;
     }
@@ -121,13 +132,13 @@
             <li><a href="#section2">实例</a>
                 <ul>
                     <li><a href="#section2-1">例1：简单示例</a></li>
-                    <li><a href="#section2-2">例2：根据外部变量值呈现不同内容</a></li>
+                    <li><a href="#section2-2">例2：根据外部属性值呈现不同内容</a></li>
                     <li><a href="#section2-3">例3：国际化 key 支持插值表达式</a></li>
                     <li><a href="#section2-4">例4：叠加节点</a></li>
-                    <li><a href="#section2-5">例5：vm 变量值来源于国际化内容</a></li>
+                    <li><a href="#section2-5">例5：vm 属性值来源于国际化内容</a></li>
                     <li><a href="#section2-6">例6：动态切换语言</a></li>
                     <li><a href="#section2-7">例7：不同的 vm 呈现不同的国际化区域</a></li>
-                </ul>
+                    <li><a href="#section2-8">例8：定制配置</a></li </ul>
             </li>
             <li><a href="#section3">附录</a>
                 <ul>
@@ -175,8 +186,8 @@
                 </tr>
             </tbody>
         </table>
-        <p>还需要考虑现在多类别屏幕，电脑屏幕、平板屏幕、手机屏幕等，这些屏幕可呈现区域大小不同，呈现内容如何自动适应？</p>
-        <p>对于开发人员，不可能是一个语言学家，在开发时没法确定这些内容如何才能最好的国际化呈现，而只有UI设计人员和翻译人员才能确定。</p>
+        <p>还需要考虑现在多类别屏幕，电脑屏幕、平板屏幕、手机屏幕等，这些屏幕可呈现区域大小不同，呈现内容如何自动适应？例如手机屏幕很小，呈现内容就不可能像电脑屏幕的呈现。</p>
+        <p>同时对于开发人员，不可能是一个语言学家，在开发时没法确定这些内容如何才能最好的国际化呈现，而只有UI设计人员和翻译人员才能确定。</p>
         <p><a class="serif" href="http://l20n.org">mozilla l20n</a>很好解决了这些问题，具有很强大和非常灵活的国际化能力，因此基于 l20n 内核将一流的国际化能力引入到 avalon 生态圈中</p>
         <h2 id="section2">二、实例：</h2>
         <h3 id="section2-1">例1：简单示例</h3>
@@ -206,7 +217,7 @@
             <p ms-l20n="Attribute"></p>
         </div>
         <!-- ================== -->
-        <h3 id="section2-2">例2：根据外部变量值呈现不同内容</h3>
+        <h3 id="section2-2">例2：根据外部属性值呈现不同内容</h3>
         <p>以前面数字呈现为例。国际化 key <em class="typo-em">objectsWithCount</em>，有一个外部参数<em class="typo-em">objectsNum</em>，当改变input数字内容将赋值给 objectsNum，此时可以看到随着数字变化，呈现内容也在变化。可以切换不同语言看效果。</p>
         <h4>这里是示例运行结果(代码请看页面源码)：</h4>
         <!-- 这是 samples2 示例 -->
@@ -244,8 +255,8 @@
             </div>
         </div>
         <!-- ================== -->
-        <h3 id="section2-5">例5：vm 变量值来源于国际化内容</h3>
-        <p>我们也可以在vm定义以<u>L20nAuto</u>为结尾的变量，这些变量的值来源于国际化内容，国际化key等于变量名去掉结尾L20nAuto后的值。目前存在一个约束，参见</p>
+        <h3 id="section2-5">例5：vm 属性值来源于国际化内容</h3>
+        <p>我们也可以在vm定义以<u>L20nAuto</u>为结尾的属性，这些属性的值来源于国际化内容，国际化key等于属性名去掉结尾L20nAuto后的值。目前存在一个约束，参见</p>
         <blockquote>
             <b>附录一</b>：<a href="#appendix1"><i class="serif">MS-L20N</i> 约束</a>
         </blockquote>
@@ -271,6 +282,7 @@
         <!-- ================== -->
         <h3 id="section2-7">例7：不同的 vm 呈现不同的国际化区域</h3>
         <p>国际化内容是以vm来确定范围的。如果不需要分区域国际化，可以在HTML元素上绑定一个根vm，也可以在特定vm上进行绑定。</p>
+        <p><b>需要注意：</b>如果希望<em class="typo-em">限定在某vm而不是溯源到上面vm</em>，则需要在vm中定义一个<em class="typo-em">l20n</em>的属性，并且是非监控属性</p>
         <h4>这里是示例运行结果(代码请看页面源码)：</h4>
         <!-- 这是 samples7 示例 -->
         <div ms-important='samples7'>
@@ -292,6 +304,50 @@
                 <button ms-click="changeLocale('en-US')">samples72 en-US</button>
                 <button ms-click="changeLocale('pl')">samples72 pl</button>
                 <button ms-click="changeLocale('zh-CN')">samples72 zh-CN</button>
+                <p ms-l20n="Attribute"></p>
+            </div>
+        </div>
+        <!-- ================== -->
+        <h3 id="section2-8">例8：定制配置</h3>
+        <h4>系统默认值：</h4>
+        <ol>
+            <li>页面初始打开时默认的语言是 <code>navigator.language || navigator.browserLanguage</code>。</li>
+            <li>国际化manifest文件默认是相对baseUrl的<code>'locales/l20n.json'</code>。例如前面的例子，文件是在<code>modules/locales/l20n.json</code></li>
+            <li>l20n绑定的vm上如果定义了<code>currentLocale</code>属性，则会自动赋值当前<code>locale</code>，并且会自动在切换语言时自动切换</li>
+        </ol>
+        <p></p>
+        <h4>这里是示例运行结果(代码请看页面源码)：</h4>
+        <!-- 这是 samples8 示例 -->
+        <div ms-important='samples8'>
+            <button ms-click="changeLocaleGlobal('en-US')">全局 en-US</button>
+            <button ms-click="changeLocaleGlobal('pl')">全局 pl</button>
+            <button ms-click="changeLocaleGlobal('zh-CN')">全局 zh-CN</button>
+            <br></br>
+            <button ms-click="changeLocale('en-US')">samples8 en-US</button>
+            <button ms-click="changeLocale('pl')">samples8 pl</button>
+            <button ms-click="changeLocale('zh-CN')">samples8 zh-CN</button>
+            <div>
+                <a href="#" ms-visible="currentLocale != 'pl'" ms-click="changeLocale('pl')">Wersja polska</a>
+                <a href="#" ms-visible="currentLocale != 'zh-CN'" ms-click="changeLocale('zh-CN')">中文版本</a>
+                <a href="#" ms-visible="currentLocale != 'en-US'" ms-click="changeLocale('en-US')">English version</a>
+            </div>
+            <p ms-l20n="Attribute"></p>
+            <div ms-controller="samples81">
+                <button ms-click="changeLocale('en-US')">samples81 en-US</button>
+                <button ms-click="changeLocale('pl')">samples81 pl</button>
+                <button ms-click="changeLocale('zh-CN')">samples81 zh-CN</button>
+                <p ms-l20n="Attribute"></p>
+            </div>
+            <div ms-controller="samples82">
+                <button ms-click="changeLocale('en-US')">samples82 en-US</button>
+                <button ms-click="changeLocale('pl')">samples82 pl</button>
+                <button ms-click="changeLocale('zh-CN')">samples82 zh-CN</button>
+                <p ms-l20n="Attribute"></p>
+            </div>
+            <div ms-controller="samples83">
+                <button ms-click="changeLocale('en-US')">samples83 en-US</button>
+                <button ms-click="changeLocale('pl')">samples83 pl</button>
+                <button ms-click="changeLocale('zh-CN')">samples83 zh-CN</button>
                 <p ms-l20n="Attribute"></p>
             </div>
         </div>
