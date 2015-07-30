@@ -299,7 +299,7 @@
         <h4>系统默认值：</h4>
         <ol>
             <li>页面初始打开时默认的语言是 <code>navigator.language || navigator.browserLanguage</code>。</li>
-            <li>国际化manifest文件默认是相对baseUrl的<code>'locales/l20n.json'</code>。例如前面的例子，文件是在<code>modules/locales/l20n.json</code></li>
+            <li>国际化manifest文件默认是相对页面位置的<code>'locales/l20n.json'</code>。例如前面的例子，文件是在<code>locales/l20n.json</code></li>
             <li>l20n绑定的vm上如果定义了<code>currentLocale</code>属性，则会自动赋值当前<code>locale</code>，并且会自动在切换语言时自动切换</li>
         </ol>
         <h4>参数定制：</h4>
