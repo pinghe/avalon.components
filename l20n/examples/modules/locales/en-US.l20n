@@ -1,0 +1,19 @@
+<plural($n) {
+    $n == 0 ? "zero" :
+    $n == 1 ? "one" :
+              "many"
+}>
+
+<objectsWithCount[plural($objectsNum)] {
+    zero: "{{setObjectsNumber}} no objects",
+    one: "{{setObjectsNumber}} 1 object",
+    many: "{{setObjectsNumber}} {{ $objectsNum }} objects",
+}>
+
+<setObjectsNumber "Set objects number">
+
+<overlayed "This paragraph tests <strong>overlaying nodes</strong>. Test number: <input>.">
+
+<testp "paragraph">
+
+<Attribute "Attribute-modules/locales">
