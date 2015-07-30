@@ -1,4 +1,9 @@
 ﻿/**
+ * Created by pinghe on 2015-07-14.
+ */
+
+ 
+/**
  * @cnName avalon 封装 l20n 的国际化插件
  * @enName avalon l20n
  * @introduce
