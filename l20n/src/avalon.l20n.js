@@ -409,11 +409,10 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/Intl", "msl20n/l20n/l20n/platform/
     avalon.bindingHandlers.l20n = function(data, vmodels) {
         var el = data.element,
             msl20n, options, ctxid;
-        vmodels.map(function(el) {
-            if (el.$model.l20n) {
+        vmodels.forEach(function(el) {
+            if (el.$model.l20n && ctxid === undefined) {
                 ctxid = String(el.$id).replace(rproxy, "$1")
                 options = el.$model.l20n
-                break
             }
             // return el.$id
         })

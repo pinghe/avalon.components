@@ -89,7 +89,7 @@ define(['msl20n/avalon.l20n'], function(avalon, ace) {
         $skipArray: ["l20n"],
         l20n: {
             initLocale: 'en-US', //页面初始打开时默认语言，未设置则为浏览器当前语言
-            manifestResource: "locales/l20n.json", //这里是相对页面路径
+            manifestResource: "modules/locales/l20n.json", //这里是相对页面路径
         },
 
         changeLocale: function(newLocale) {
@@ -105,7 +105,7 @@ define(['msl20n/avalon.l20n'], function(avalon, ace) {
         $skipArray: ["l20n"],
         l20n: {
             initLocale: 'pl', //页面初始打开时默认语言，未设置则为浏览器当前语言
-            manifestResource: "locales/l20n.json", //这里是绝对路径
+            manifestResource: "locales/l20n.json", //manifest 文件所在位置
         },
 
 
@@ -126,11 +126,6 @@ define(['msl20n/avalon.l20n'], function(avalon, ace) {
 
     var vmsamples83 = avalon.define({
         $id: "samples83",
-        $skipArray: ["l20n"],
-
-        changeLocale: function(newLocale) {
-            avalon.changeLocale(newLocale, vmsamples83.$id);
-        },
 
     })
 

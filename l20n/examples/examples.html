@@ -138,7 +138,8 @@
                     <li><a href="#section2-5">例5：vm 属性值来源于国际化内容</a></li>
                     <li><a href="#section2-6">例6：动态切换语言</a></li>
                     <li><a href="#section2-7">例7：不同的 vm 呈现不同的国际化区域</a></li>
-                    <li><a href="#section2-8">例8：定制配置</a></li </ul>
+                    <li><a href="#section2-8">例8：定制配置</a></li>
+                </ul>
             </li>
             <li><a href="#section3">附录</a>
                 <ul>
@@ -256,7 +257,7 @@
         </div>
         <!-- ================== -->
         <h3 id="section2-5">例5：vm 属性值来源于国际化内容</h3>
-        <p>我们也可以在vm定义以<u>L20nAuto</u>为结尾的属性，这些属性的值来源于国际化内容，国际化key等于属性名去掉结尾L20nAuto后的值。目前存在一个约束，参见</p>
+        <p>我们也可以在vm定义以<em class="typo-em">L20nAuto</em><sup>注意区分大小写</sup>为结尾的属性，这些属性的值来源于国际化内容，国际化key等于属性名去掉结尾L20nAuto后的值。目前存在一个约束，参见</p>
         <blockquote>
             <b>附录一</b>：<a href="#appendix1"><i class="serif">MS-L20N</i> 约束</a>
         </blockquote>
@@ -282,7 +283,7 @@
         <!-- ================== -->
         <h3 id="section2-7">例7：不同的 vm 呈现不同的国际化区域</h3>
         <p>国际化内容是以vm来确定范围的。如果不需要分区域国际化，可以在HTML元素上绑定一个根vm，也可以在特定vm上进行绑定。</p>
-        <p><b>需要注意：</b>如果希望<em class="typo-em">限定在某vm而不是溯源到上面vm</em>，则需要在vm中定义一个<em class="typo-em">l20n</em>的属性，并且是非监控属性</p>
+        <p><b>需要注意：</b>如果希望<em class="typo-em">限定在某vm而不是溯源到上面vm</em>，则需要在vm中定义一个名为<em class="typo-em">l20n</em><sup>注意全小写</sup>的属性<code>l20n: {}</code>，并且设定为非监控属性<code>$skipArray: ["l20n"]</code>，详见<a href="#section2-8">例8：定制配置</a></li></p>
         <h4>这里是示例运行结果(代码请看页面源码)：</h4>
         <!-- 这是 samples7 示例 -->
         <div ms-important='samples7'>
@@ -315,8 +316,19 @@
             <li>国际化manifest文件默认是相对baseUrl的<code>'locales/l20n.json'</code>。例如前面的例子，文件是在<code>modules/locales/l20n.json</code></li>
             <li>l20n绑定的vm上如果定义了<code>currentLocale</code>属性，则会自动赋值当前<code>locale</code>，并且会自动在切换语言时自动切换</li>
         </ol>
+        <h4>参数定制：</h4>
+        <ol>
+            <li>当 VM 定义了名为<em class="typo-em">l20n</em><sup>注意全小写</sup>的属性<code>l20n: {}</code>，并且设定为非监控属性<code>$skipArray: ["l20n"]</code>时，该 VM 范围内的国际化都将绑定到该 VM。<em class="typo-em">l20n</em>属性有两个参数可配，都是可选。<pre>
+        l20n: {
+            initLocale: 'pl', //页面初始打开时默认语言，未设置则为浏览器当前语言
+            manifestResource: "locales/l20n.json", //manifest 文件所在位置
+        },
+
+            </pre></li>
+        </ol>
         <p></p>
-        <h4>这里是示例运行结果(代码请看页面源码)：</h4>
+        <h4 id="samples8">这里是示例运行结果(代码请看页面源码)：</h4>
+        <hr>VM samples8</hr>
         <!-- 这是 samples8 示例 -->
         <div ms-important='samples8'>
             <button ms-click="changeLocaleGlobal('en-US')">全局 en-US</button>
@@ -327,31 +339,44 @@
             <button ms-click="changeLocale('pl')">samples8 pl</button>
             <button ms-click="changeLocale('zh-CN')">samples8 zh-CN</button>
             <div>
-                <a href="#" ms-visible="currentLocale != 'pl'" ms-click="changeLocale('pl')">Wersja polska</a>
-                <a href="#" ms-visible="currentLocale != 'zh-CN'" ms-click="changeLocale('zh-CN')">中文版本</a>
-                <a href="#" ms-visible="currentLocale != 'en-US'" ms-click="changeLocale('en-US')">English version</a>
+                <a href="#samples8" ms-visible="currentLocale != 'pl'" ms-click="changeLocale('pl')">Wersja polska</a>
+                <a href="#samples8" ms-visible="currentLocale != 'zh-CN'" ms-click="changeLocale('zh-CN')">中文版本</a>
+                <a href="#samples8" ms-visible="currentLocale != 'en-US'" ms-click="changeLocale('en-US')">English version</a>
             </div>
             <p ms-l20n="Attribute"></p>
+            <hr>VM samples81</hr>
             <div ms-controller="samples81">
                 <button ms-click="changeLocale('en-US')">samples81 en-US</button>
                 <button ms-click="changeLocale('pl')">samples81 pl</button>
                 <button ms-click="changeLocale('zh-CN')">samples81 zh-CN</button>
                 <p ms-l20n="Attribute"></p>
             </div>
+            <hr>VM samples82</hr>
             <div ms-controller="samples82">
                 <button ms-click="changeLocale('en-US')">samples82 en-US</button>
                 <button ms-click="changeLocale('pl')">samples82 pl</button>
                 <button ms-click="changeLocale('zh-CN')">samples82 zh-CN</button>
                 <p ms-l20n="Attribute"></p>
             </div>
+            <hr>VM samples83</hr>
             <div ms-controller="samples83">
-                <button ms-click="changeLocale('en-US')">samples83 en-US</button>
-                <button ms-click="changeLocale('pl')">samples83 pl</button>
-                <button ms-click="changeLocale('zh-CN')">samples83 zh-CN</button>
+                <p>国际化继承自父 VM samples8</p>
                 <p ms-l20n="Attribute"></p>
             </div>
         </div>
         <!-- ================== -->
+        <h3 id="section3">三、附录</h3>
+
+<h5 id="appendix1">1、<i class="serif">MS-L20N</i> 约束</h5>
+<h5 id="appendix2">2、开源许可</h5>
+
+<p><i class="serif">Typo.css</i> 基于 <a href="http://zh.wikipedia.org/wiki/MIT_License">MIT License</a> 开源，使用代码只需说明来源，或者引用 <a
+  href="http://typo.sofi.sh/license.txt">license.txt</a> 即可。</p>
+</div>
+<!-- #wrapper -->
+<a href="https://github.com/sofish/Typo.css" id="fork">
+  <img alt="Fork me on GitHub" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
+</a>
     </div>
 </body>
 
