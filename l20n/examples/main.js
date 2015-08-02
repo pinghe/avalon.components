@@ -10,6 +10,7 @@ require.config({//第一块，配置
         avalon: '../vendor/avalon/avalon.modern.shim',
         msl20n: '../vendor/msl20n',
         domReady: '../vendor/require/domReady',
+        meld: '../vendor/meld/meld',
     },
     deps: ['./app']
 });
