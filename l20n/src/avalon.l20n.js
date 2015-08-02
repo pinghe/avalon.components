@@ -2,7 +2,7 @@
  * Created by pinghe on 2015-07-14.
  */
 
- 
+
 /**
  * @cnName avalon 封装 l20n 的国际化插件
  * @enName avalon l20n
@@ -10,7 +10,7 @@
  *    <p></p>
  *  @updatetime 2015-07-12
  */
-define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/io", "avalon"], function(mzl20n, Intl, io, avalon) {
+define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/io", "avalon", "msl20n/meld"], function(mzl20n, Intl, io, avalon, meld) {
     'use strict';
 
     var rproxy = /(\$proxy\$[a-z]+)\d+$/
@@ -572,9 +572,10 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
         }
     };
 
+    var remover = meld.after(avalon, 'define', function(result) {
+        // console.log('avalon.define returned: ' + result.$id);
+        avalon.localize(result.$id);
+    });
 
-    avalon.ready(function() {
-        avalon.localize()
-    })
     return avalon
 })
