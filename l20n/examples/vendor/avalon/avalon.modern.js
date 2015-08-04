@@ -5,7 +5,7 @@
  http://weibo.com/jslouvre/
  
  Released under the MIT license
- avalon.modern.js 1.45 built in 2015.7.27
+ avalon.modern.js 1.46 built in 2015.8.4
  support IE10+ and other browsers
  ==================================================*/
 (function(global, factory) {
@@ -269,7 +269,7 @@ function _number(a, len) { //用于模拟slice, splice的效果
 avalon.mix({
     rword: rword,
     subscribers: subscribers,
-    version: 1.45,
+    version: 1.46,
     ui: {},
     log: log,
     slice: function(nodes, start, end) {
@@ -691,6 +691,8 @@ var plugins = {
             if (cinerator.innerHTML !== test && cinerator.innerHTML.indexOf("&lt;") > -1) {
                 throw new SyntaxError("此定界符不合法")
             }
+            kernel.openTag = openTag
+            kernel.closeTag = closeTag
             cinerator.innerHTML = ""
         }
         var o = escapeRegExp(openTag),
@@ -893,7 +895,8 @@ function modelFactory(source, $special, $model) {
                 accessor = makeComputedAccessor(name, val)
                 computed.push(accessor)
             } else if (rcomplexType.test(valueType)) {
-                accessor = makeComplexAccessor(name, val, valueType, $events[name])
+                // issue #940 解决$model层次依赖丢失 https://github.com/RubyLouvre/avalon/issues/940
+                accessor = makeComplexAccessor(name, val, valueType, $events[name], $model)
             } else {
                 accessor = makeSimpleAccessor(name, val)
             }
@@ -912,7 +915,7 @@ function modelFactory(source, $special, $model) {
     $vmodel.$id = generateID()
     $vmodel.$model = $model
     $vmodel.$events = $events
-    $vmodel.$propertyNames = names.sort().join("&shy;")
+    $vmodel.$propertyNames = names.join("&shy;")
     for (i in EventBus) {
         $vmodel[i] = EventBus[i]
     }
@@ -1019,7 +1022,7 @@ function makeComputedAccessor(name, options) {
 
 
 //创建一个复杂访问器
-function makeComplexAccessor(name, initValue, valueType, list) {
+function makeComplexAccessor(name, initValue, valueType, list, parentModel) {
     function accessor(value) {
         var oldValue = accessor._value
         var son = accessor._vmodel
@@ -1044,23 +1047,24 @@ function makeComplexAccessor(name, initValue, valueType, list) {
                 delete a.$lock
                 a._fire("set")
             } else if (valueType === "object") {
-                var newPropertyNames = Object.keys(value).sort().join("&shy;")
+                var newPropertyNames = Object.keys(value).join("&shy;")
                 if (son.$propertyNames === newPropertyNames) {
                     for (i in value) {
                         son[i] = value[i]
                     }
                 } else {
-                    var sson = accessor._vmodel = modelFactory(value)
+                    var sson = accessor._vmodel = modelFactory(value, 0, son.$model)
                     var sevent = sson.$events
                     var oevent = son.$events
-                    for (var i in sevent) {
-                        var arr = sevent[i]
-                        if (Array.isArray(arr)) {
-                            arr = arr.concat(oevent[i])
+                    for (var i in oevent) {
+                        var arr = oevent[i]
+                        if (Array.isArray(sevent[i])) {
+                            sevent[i] = sevent[i].concat(arr)
+                        } else {
+                            delete sson.$model[i]
                         }
                     }
                     sevent[subscribers] = oevent[subscribers]
-                    sson.$proxy = son.$proxy
                     son = sson
                 }
             }
@@ -1073,7 +1077,12 @@ function makeComplexAccessor(name, initValue, valueType, list) {
         }
     }
     accessorFactory(accessor, name)
-    var son = accessor._vmodel = modelFactory(initValue)
+    if (Array.isArray(initValue)) {
+        parentModel[name] = initValue
+    } else {
+        parentModel[name] = parentModel[name] || {}
+    }
+    var son = accessor._vmodel = modelFactory(initValue, 0, parentModel[name])
     son.$events[subscribers] = list
     return accessor
 }
@@ -1420,6 +1429,9 @@ avalon.injectBinding = function (data) {
     if (valueFn) { //如果是求值函数
         dependencyDetection.begin({
             callback: function (vmodel, dependency) {
+                if(data.signature){
+                    console.log(data.$repeat,"array")
+                }
                 injectDependency(vmodel.$events[dependency._name], data)
             }
         })
@@ -1430,7 +1442,7 @@ avalon.injectBinding = function (data) {
             }
             data.handler(value, data.element, data)
         } catch (e) {
-            //log("warning:exception throwed in [avalon.injectBinding] " + e)
+            log("warning:exception throwed in [avalon.injectBinding] " , e)
             delete data.evaluator
             var node = data.element
             if (node.nodeType === 3) {
@@ -3599,18 +3611,20 @@ bindingExecutors.repeat = function (method, pos, el) {
                 break
             case "append":
                 var object = data.$repeat //原来第2参数， 被循环对象
-                var oldProxy = object.$proxy   //代理对象组成的hash
                 var keys = []
-                now = new Date() - 0
-                avalon.optimize = avalon.optimize || now
+
                 if (flag === "update") {
                     if (!data.evaluator) {
                         parseExprProxy(data.value, data.vmodels, data, 0, 1)
                     }
                     object = data.$repeat = data.evaluator.apply(0, data.args || [])
-                    object.$proxy = oldProxy
+                 //   object.$proxy = oldProxy
                 }
-                var pool = object.$proxy || {}
+                //用于放置 所有代理VM
+                data.proxies =  data.proxies || {}
+                var pool = data.proxies
+                
+                //收集所有要移除的节点,除了第一个与最后一个注释节点
                 removed = []
                 var nodes = data.element.parentNode.childNodes
                 var add = false
@@ -3637,23 +3651,25 @@ bindingExecutors.repeat = function (method, pos, el) {
                     item.appendChild(el)
                 }
 
-
-                for (var key in object) { //当前对象的所有键名
+                //收集当前所有用户添加的键名(不包括框架架上的$xxxx)
+                for (var key in object) { 
                     if (object.hasOwnProperty(key) && key !== "hasOwnProperty" && key !== "$proxy") {
                         keys.push(key)
                     }
                 }
-
+                //为pool添加代理VM
                 for (var i = 0; key = keys[i++]; ) {
-                    if (!pool.hasOwnProperty(key)) {//添加缺失的代理VM
+                    if (!pool.hasOwnProperty(key)) {
+                        //如果不存在就从withProxyPool中拿,再不存在就创建
                         pool[key] = withProxyAgent(pool[key], key, data)
-                    } else {
+                    } else {//存在就重写$val
                         pool[key].$val = object[key]
                     }
                 }
-
+                //从pool中删除不再使用代理VM
                 for (key in pool) {
-                    if (keys.indexOf(key) === -1) {//删除没用的代理VM
+                    if (keys.indexOf(key) === -1) {
+                        delete keyIndex[key]
                         proxyRecycler(pool[key], withProxyPool) //去掉之前的代理VM
                         delete pool[key]
                     }
@@ -3670,7 +3686,7 @@ bindingExecutors.repeat = function (method, pos, el) {
 
                 for (i = 0; i < renderKeys.length; i++) {
                     key = renderKeys[i]
-                    if (typeof keyIndex[key] === "number") {
+                    if (indexNode[keyIndex[key]]) {//重用已有节点
                         transation.appendChild(indexNode[keyIndex[key]])
                         fragments.push({})
                     } else {
@@ -3781,6 +3797,7 @@ function withProxyAgent(proxy, key, data) {
     }
     var host = data.$repeat
     proxy.$key = key
+
     proxy.$host = host
     proxy.$outer = data.$outer
     if (host.$events) {
@@ -3874,12 +3891,13 @@ function eachProxyAgent(index, data) {
 
 function proxyRecycler(proxy, proxyPool) {
     for (var i in proxy.$events) {
-        if (Array.isArray(proxy.$events[i])) {
-            proxy.$events[i].forEach(function (data) {
+        var arr = proxy.$events[i]
+        if (Array.isArray(arr)) {
+            arr.forEach(function (data) {
                 if (typeof data === "object")
                     disposeData(data)
             })// jshint ignore:line
-            proxy.$events[i].length = 0
+            arr.length = 0
         }
     }
     proxy.$host = proxy.$outer = {}

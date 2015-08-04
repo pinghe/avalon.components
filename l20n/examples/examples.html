@@ -354,7 +354,7 @@ l20n: {
         <h3 id="section3">三、附录</h3>
         <h5 id="appendix1">1、<i class="serif">MS-L20N</i> 约束</h5>
         <ol>
-            <li>ms-l20n 指令使用插值表达式时，只支持<em class="typo-em">双花括号</em>，主要原因是 <code>avalon.js</code> 中可以自定义插值分隔符，但值并未公开，外部无法获取访问到。</li>
+            <li><del>ms-l20n 指令使用插值表达式时，只支持<em class="typo-em">双花括号</em>，主要原因是 <code>avalon.js</code> 中可以自定义插值分隔符，但值并未公开，外部无法获取访问到。</del>在 <em class="typo-em">avalon 1.4.6</em> 已可以访问到自定义插值分隔符，在 <em class="typo-em"> 1.0.4.3</em> 没有此限制了</li>
             <li>ms-l20n 只支持 manifest 方式国际化，不支持在 html 页面中定义。</li>
             <li><del>如果定义结尾是<em class="typo-em">L20nAuto</em><sup>注意区分大小写</sup>的属性，将会绑定国际化内容。目前还无法做到自动绑定，需要在调用<code>avalon.scan()</code>之后调用<code>avalon.localize()</code></code>，也可以只扫描某个vm，需要带上参数vmid。</del>1.0.4.2 及以后版本支持自动关联，不需要代码中明确调用localize</li>
         </ol>
