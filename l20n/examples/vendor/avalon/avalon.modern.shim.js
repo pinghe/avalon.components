@@ -686,6 +686,7 @@ var plugins = {
         closeTag = array[1]
         if (openTag === closeTag) {
             throw new SyntaxError("openTag!==closeTag")
+        } else {
             var test = openTag + "test" + closeTag
             cinerator.innerHTML = test
             if (cinerator.innerHTML !== test && cinerator.innerHTML.indexOf("&lt;") > -1) {
