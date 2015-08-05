@@ -344,8 +344,8 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
 
     function scanExpr(str) {
         var tokens = [],
-            openTag = avalon.openTag,
-            closeTag = avalon.closeTag,
+            openTag = avalon.config.openTag,
+            closeTag = avalon.config.closeTag,
             value, start = 0,
             stop
         do {
