@@ -178,11 +178,11 @@
         <h2 id="section2">二、实例：</h2>
         <h3 id="section2-1">例1：简单示例</h3>
         <p>使用非常简单，只要定义属性 ms-l20n，值等于国际化 key。例如：</p>
-        <pre id="editors1html">
+        <pre id="editors1html" ms-skip>
 &ltp ms-l20n="Attribute"&gt&lt/p>
          </pre>
         <p>国际化文件定义，首先定义manifest文件。例如 l20n.json:</p>
-        <pre id="editors1json">
+        <pre id="editors1json" ms-skip>
 {
     "locales": [
         "zh-CN",
@@ -200,7 +200,7 @@
         <!-- 这是 samples1 示例 -->
         <div ms-important='samples1'>
             这里呈现的是国际化key Attribute 的国际化内容：
-            <p ms-l20n="Attribute"></p>
+            <p ms-l20n="Attribute">国际化中....</p>
         </div>
         <!-- ================== -->
         <h3 id="section2-2">例2：根据外部属性值呈现不同内容</h3>
@@ -211,7 +211,7 @@
             <button ms-click="changeLocale('en-US')">en-US</button>
             <button ms-click="changeLocale('pl')">pl</button>
             <button ms-click="changeLocale('zh-CN')">zh-CN</button>
-            <p ms-l20n="objectsWithCount({'objectsNum': {{data.objectsNum}} })">=={{l20nI18nId}}==</p>
+            <p ms-l20n="objectsWithCount({'objectsNum': {{data.objectsNum}} })">国际化中....</p>
             <input type="number" ms-duplex="data.objectsNum">
         </div>
         <!-- ================== -->
@@ -223,7 +223,7 @@
             <button ms-click="changeLocale('en-US')">en-US</button>
             <button ms-click="changeLocale('pl')">pl</button>
             <button ms-click="changeLocale('zh-CN')">zh-CN</button>
-            <p ms-l20n="{{l20nI18nId}}">=={{l20nI18nId}}==</p>
+            <p ms-l20n="{{l20nI18nId}}">国际化中....</p>
             <input type="text" ms-duplex="l20nI18nId">
         </div>
         <!-- ================== -->
@@ -236,7 +236,7 @@
             <button ms-click="changeLocale('pl')">pl</button>
             <button ms-click="changeLocale('zh-CN')">zh-CN</button>
             <div id="overlayed" ms-l20n="overlayed">
-                <strong ms-attr-data-result=" (Attribute: {{data.testNumber}} )"></strong>
+                <strong ms-attr-data-result=" (Attribute: {{data.testNumber}} )">国际化中....</strong>
                 <input type="number" ms-duplex="data.testNumber"></input>
             </div>
         </div>
@@ -304,7 +304,7 @@
         </ol>
         <h4>参数定制：</h4>
         <ol>
-            <li>当 VM 定义了名为<em class="typo-em">l20n</em><sup>注意全小写</sup>的属性<code>l20n: {}</code>，并且设定为非监控属性<code>$skipArray: ["l20n"]</code>时，该 VM 范围内的国际化都将绑定到该 VM。<em class="typo-em">l20n</em>属性有两个参数可配，都是可选。<pre>
+            <li>当 VM 定义了名为<em class="typo-em">l20n</em><sup>注意全小写</sup>的属性<code>l20n: {}</code>，并且设定为非监控属性<code>$skipArray: ["l20n"]</code>时，该 VM 范围内的国际化都将绑定到该 VM。<em class="typo-em">l20n</em>属性有两个参数可配，都是可选。<pre ms-skip>
 l20n: {
     initLocale: 'pl', //页面初始打开时默认语言，未设置则为浏览器当前语言
     manifestResource: "locales/l20n.json", //manifest 文件所在位置
