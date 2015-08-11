@@ -426,7 +426,7 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
             // return el.$id
         })
         if (options === undefined) { //如果都没有定义l20配置项，则使用最外层vm.$id 作为 ctxid
-            ctxid = vmodels[vmodels.length-1].$id
+            ctxid = vmodels[vmodels.length - 1].$id
         }
 
         if (ctxid) {
@@ -435,8 +435,14 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
             var l20nid = data.value;
             if (l20nid) {
                 //debugger;
-                var code = "";
-                avalon.parseExprProxy(code, vmodels, data, scanExpr(l20nid));
+
+                var code = "", tokens = scanExpr(l20nid);
+                if (Array.isArray(tokens)) {
+                    code = tokens.map(function(el) {
+                        return el.expr ? "(" + el.value + ")" : JSON.stringify(el.value)
+                    }).join(" + ")
+                }
+                avalon.parseExprProxy(code, vmodels, data);
 
                 return;
             }

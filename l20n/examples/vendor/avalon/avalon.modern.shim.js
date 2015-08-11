@@ -2336,6 +2336,7 @@ function stringifyExpr(code) {
 //parseExpr的智能引用代理
 
 function parseExprProxy(code, scopes, data, noRegister) {
+    code = code || "" //code 可能未定义
     parseExpr(code, scopes, data)
     if (data.evaluator && !noRegister) {
         data.handler = bindingExecutors[data.handlerName || data.type]
