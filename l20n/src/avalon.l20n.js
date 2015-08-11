@@ -414,15 +414,19 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
     avalon.bindingHandlers.l20n = function(data, vmodels) {
         var el = data.element,
             msl20n, options, ctxid;
-        vmodels.forEach(function(el) {
-            if (el.$model.l20n && ctxid === undefined) {
-                ctxid = String(el.$id).replace(rproxy, "$1")
+        vmodels.forEach(function(el) { //由里到外一层覆盖
+            if (el.$model.l20n && options === undefined) {
                 options = el.$model.l20n
+            }
+            if (options && ctxid === undefined && options.ctxid === undefined) {
+                ctxid = String(el.$id).replace(rproxy, "$1")
+            } else if (options && ctxid === undefined && options.ctxid != undefined) {
+                ctxid = options.ctxid
             }
             // return el.$id
         })
         if (options === undefined) { //如果都没有定义l20配置项，则使用最外层vm.$id 作为 ctxid
-            ctxid = vmodels[0].$id
+            ctxid = vmodels[vmodels.length - 1].$id
         }
 
         if (ctxid) {
@@ -431,8 +435,14 @@ define(["msl20n/l20n/l20n", "msl20n/l20n/l20n/intl", "msl20n/l20n/l20n/platform/
             var l20nid = data.value;
             if (l20nid) {
                 //debugger;
-                var code;
-                avalon.parseExprProxy(code, vmodels, data, scanExpr(l20nid));
+
+                var code = "", tokens = scanExpr(l20nid);
+                if (Array.isArray(tokens)) {
+                    code = tokens.map(function(el) {
+                        return el.expr ? "(" + el.value + ")" : JSON.stringify(el.value)
+                    }).join(" + ")
+                }
+                avalon.parseExprProxy(code, vmodels, data);
 
                 return;
             }
